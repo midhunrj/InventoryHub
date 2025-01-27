@@ -1,0 +1,1 @@
+export const userUrl=import.meta.env.VITE_USER_URL
