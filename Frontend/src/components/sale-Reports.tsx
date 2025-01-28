@@ -314,7 +314,7 @@
 import React, { useState, useEffect } from 'react';
 import * as XLSX from "xlsx";
 import { jsPDF } from "jspdf";
- import 'jspdf-autotable'
+import "jspdf-autotable"
 import { 
   Input, 
   Button, 
@@ -335,7 +335,21 @@ import {
 } from 'react-icons/fa';
 import { userAuthenticate } from '../utils/userInterceptor';
 import SidebarMenu from './SIdebar';
+import { ProductData } from './products';
+import { CustomerType } from './customerManagement';
+interface Item {
+  productId: ProductData;
+  quantity: number;
+  price:number}
+type SaleDataType={
+  customer:CustomerType,
+  items:Item[]
+  date:Date
 
+  payment:'Cash'|'Card'|'Online'
+  totalAmount:number
+
+}
 // Types for different report configurations
 type SaleReportType = {
   id: number;
@@ -390,7 +404,7 @@ const SalesReportManagement = () => {
        
       setProducts(productsResponse.data);
       setCustomers(customersResponse.data);
-      const salesData = salesResponse.data.sales.flatMap((sale) =>
+      const salesData = salesResponse.data.sales.flatMap((sale:SaleDataType) =>
         sale.items.map((item) => ({
           productName: item.productId.name,
           customerName: sale.customer.name,
@@ -453,7 +467,7 @@ console.log(reportFilter,"reportfilterddgd",);
       sale.customerName,
       sale.date,
       sale.quantity,
-      `$${sale.totalAmount.toFixed(2)}`,
+      `₹${sale.totalAmount.toFixed(2)}`,
     ]);
 
     pdf.autoTable({
@@ -621,7 +635,7 @@ console.log(reportFilter,"reportfilterddgd",);
                     <TableCell>{sale.customerName}</TableCell>
                     <TableCell>{sale.date}</TableCell>
                     <TableCell>{sale.quantity}</TableCell>
-                    <TableCell>${sale.totalAmount.toFixed(2)}</TableCell>
+                    <TableCell>₹{sale.totalAmount.toFixed(2)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

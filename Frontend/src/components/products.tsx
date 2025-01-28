@@ -24,30 +24,21 @@ import {
 import SidebarMenu from './SIdebar';
 import { useNavigate } from 'react-router-dom';
 import { userAuthenticate } from '../utils/userInterceptor';
-
+export type ProductData={
+  _id:string,
+  name:string,
+  description:string,
+  quantity:number,
+  price:number
+}
 const ProductManagementPage = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-const [currentProduct, setCurrentProduct] = useState<typeof products[0] | null>(null);
+const [currentProduct, setCurrentProduct] = useState<ProductData | null>(null);
 
-  const [products, setProducts] = useState([
-    { 
-      id: 1, 
-      name: 'Wireless Headphones', 
-      description: 'Noise-cancelling bluetooth headphones', 
-      quantity: 50, 
-      price: 199.99 
-    },
-    { 
-      id: 2, 
-      name: 'Smart Watch', 
-      description: 'Advanced fitness tracking smartwatch', 
-      quantity: 30, 
-      price: 249.99 
-    }
-  ]);
+  const [products, setProducts] = useState<ProductData[]>([]);
 
-  const handleDeleteProduct = async (id: number) => {
+  const handleDeleteProduct = async (id:string) => {
     try {
       await userAuthenticate.delete(`/delete-product/${id}`);
       setProducts(products.filter((product) => product._id !== id)); // Update frontend state
@@ -58,7 +49,7 @@ const [currentProduct, setCurrentProduct] = useState<typeof products[0] | null>(
     }
   };
   
-  const handleUpdateProduct = async (updatedProduct: typeof products[0]) => {
+  const handleUpdateProduct = async (updatedProduct: ProductData) => {
     try {
       const response = await userAuthenticate.put(`/update-product/${updatedProduct._id}`, updatedProduct);
       setProducts(
@@ -158,11 +149,11 @@ const navigate=useNavigate()
             </div>
           }>
             {filteredProducts.map((product) => (
-              <TableRow key={product.id}>
+              <TableRow key={product._id}>
                 <TableCell>{product.name}</TableCell>
                 <TableCell>{product.description}</TableCell>
                 <TableCell>{product.quantity}</TableCell>
-                <TableCell>${product.price.toFixed(2)}</TableCell>
+                <TableCell>₹{product.price.toFixed(2)}</TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
                     <Button 
@@ -233,7 +224,7 @@ const navigate=useNavigate()
                     variant="bordered"
                     startContent={
                       <div className="pointer-events-none flex items-center">
-                        <span className="text-default-400 text-small">$</span>
+                        <span className="text-default-400 text-small">₹</span>
                       </div>
                     }
                   />
@@ -304,7 +295,7 @@ const navigate=useNavigate()
             type="number"
             value={currentProduct?.quantity }
             onChange={(e) =>
-              setCurrentProduct({ ...currentProduct, quantity: Number(e.target.value) } as typeof products[0])
+              setCurrentProduct({ ...currentProduct, quantity: Number(e.target.value) } as ProductData)
             }
           /></div>
           <div className='flex items-center gap-4'>

@@ -23,8 +23,9 @@ import {
 } from '@heroui/react';
 import SidebarMenu from './SIdebar';
 import { userAuthenticate } from '../utils/userInterceptor';
-type CustomerType={
+export type CustomerType={
   id?:string
+  _id?:string
   name:string,
   address:string,
   mobile:number

@@ -228,9 +228,9 @@ console.log(filteredSales,"filtered sales");
                     
                   <TableCell className="p-4 text-gray-800 text-center">{sale.productName}</TableCell>
                   <TableCell className="p-4 text-gray-800 text-center">{sale.customerName}</TableCell>
-                  <TableCell className="p-4 text-gray-800 text-center">${sale.price.toFixed(2)}</TableCell>
+                  <TableCell className="p-4 text-gray-800 text-center">₹{sale.price.toFixed(2)}</TableCell>
                   <TableCell className="p-4 text-gray-800 text-center">{sale.quantity}</TableCell>
-                  <TableCell className="p-4 text-gray-800 text-center">${sale.totalAmount.toFixed(2)}</TableCell>
+                  <TableCell className="p-4 text-gray-800 text-center">₹{sale.totalAmount.toFixed(2)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -255,9 +255,9 @@ console.log(filteredSales,"filtered sales");
                   <TableRow key={index} className="hover:bg-gray-50 transition-colors duration-200">
                     <TableCell className="p-4 text-gray-800 text-center">{item.customerName}</TableCell>
                                         <TableCell className="p-4 text-gray-800 text-center">{item.productName}</TableCell>
-                    <TableCell className="p-4 text-gray-800 text-center">${item.price.toFixed(2)}</TableCell>
+                    <TableCell className="p-4 text-gray-800 text-center">₹{item.price.toFixed(2)}</TableCell>
                     <TableCell className="p-4 text-gray-800 text-center">{item.quantity}</TableCell>
-                    <TableCell className="p-4 text-gray-800 text-center">${item.totalAmount.toFixed(2)}</TableCell>
+                    <TableCell className="p-4 text-gray-800 text-center">₹{item.totalAmount.toFixed(2)}</TableCell>
                     <TableCell className="p-4 text-gray-800 text-center" onClick={()=>setBillItems((prev)=>prev.filter((item,i)=>i!==index))}><FaTrash/></TableCell>
                   </TableRow>
                 ))}
@@ -376,7 +376,7 @@ console.log(filteredSales,"filtered sales");
                     className='bg-white'
                     value={product._id.toString() }
                   >
-                    {product.name} - ${product.price.toFixed(2)}
+                    {product.name} - ₹{product.price.toFixed(2)}
                   </AutocompleteItem>
                 )) : null}
               </Autocomplete>

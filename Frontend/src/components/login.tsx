@@ -13,9 +13,16 @@ const Login:React.FC = () => {
     const[password,setPassword]=useState<string>("")
     const {setUserAuthenticated}=useAuthContext()
     const navigate=useNavigate()
+    const{userAuthenticated}=useAuthContext()    
     useEffect(()=>{
+     if(userAuthenticated)
+     {console.log("ss");
+     
+        navigate('/home',{replace:true})
+     }
 
     },[])
+
     const handleSubmit=async(e:React.FormEvent<HTMLFormElement>)=>{
         e.preventDefault()
   const response=await axios.post(`${baseURL}/login`,{email,password},{withCredentials:true})
