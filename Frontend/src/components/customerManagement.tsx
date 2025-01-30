@@ -23,6 +23,7 @@ import {
 } from '@heroui/react';
 import SidebarMenu from './SIdebar';
 import { userAuthenticate } from '../utils/userInterceptor';
+import { toast } from 'sonner';
 export type CustomerType={
   id?:string
   _id?:string
@@ -33,6 +34,8 @@ export type CustomerType={
 
 const CustomerManagement = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [currentCustomer, setcurrentCustomer] = useState<CustomerType | null>(null);
   const [Customers, setCustomers] = useState<CustomerType[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [newCustomer, setNewCustomer] = useState({
@@ -56,6 +59,32 @@ useEffect(()=>{
     Customer.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleDeleteCustomer = async (id:string) => {
+    try {
+      await userAuthenticate.delete(`/delete-customer/${id}`);
+      setCustomers(Customers.filter((customer) => customer._id !== id)); // Update frontend state
+      toast.success("Product deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      toast.error("Failed to delete product.");
+    }
+  };
+  
+  const handleUpdateCustomer = async (updatedCustomer: CustomerType) => {
+    try {
+      const response = await userAuthenticate.put(`/update-customer/${updatedCustomer._id}`, updatedCustomer);
+      setCustomers(
+        Customers.map((customer) =>
+          customer._id === updatedCustomer._id ? response.data : customer
+        )
+      ); // Update frontend state
+      toast.success("Product updated successfully!");
+    } catch (error) {
+      console.error("Error updating product:", error);
+      toast.error("Failed to update product.");
+    }
+  };
+  
   const handleAddCustomer = async() => {
     // setCustomers([
     //   ...Customers, 
@@ -151,6 +180,11 @@ useEffect(()=>{
                           color="warning" 
                           variant="light"
                           className="hover:bg-yellow-100 rounded-full"
+                          onPress={()=>{
+                            setIsEditModalOpen(true)
+                            setcurrentCustomer(Customer)
+                          }
+                          }
                         >
                           <FaEdit />
                         </Button>
@@ -159,6 +193,7 @@ useEffect(()=>{
                           color="danger" 
                           variant="light"
                           className="hover:bg-red-100 rounded-full"
+                          onPress={()=>handleDeleteCustomer(Customer._id!)}
                         >
                           <FaTrash />
                         </Button>
@@ -237,6 +272,83 @@ useEffect(()=>{
             )}
           </ModalContent>
         </Modal>
+
+
+        
+        <Modal 
+  isOpen={isEditModalOpen} 
+  onOpenChange={setIsEditModalOpen}
+  placement="top-center"
+  className='bg-white z-20'
+>
+  <ModalContent>
+    {(onClose) => (
+      <>
+        <ModalHeader className="flex text-center flex-col gap-1">
+          <h1 className='text-2xl font-medium'>Edit Customer</h1>
+        </ModalHeader>
+        <ModalBody>
+        <div className='flex items-center gap-4'>
+              <label htmlFor="name" className="w-1/3 text-right font-medium">
+            Name
+          </label>
+          <Input
+          
+            value={currentCustomer?.name || ''}
+            onChange={(e) =>
+              setcurrentCustomer({ ...currentCustomer, name: e.target.value } as  CustomerType)
+            }
+          /></div>
+          <div className='flex items-center gap-4'>
+              <label htmlFor="address" className="w-1/3 text-right font-medium">
+            Address
+          </label>
+          <Textarea
+            
+            value={currentCustomer?.address || ''}
+            onChange={(e) =>
+              setcurrentCustomer({ ...currentCustomer, address: e.target.value } as CustomerType)
+            }
+          /></div>
+          <div className='flex items-center gap-4'>
+              <label htmlFor="mobile" className="w-1/3 text-right font-medium">
+            Mobile
+          </label>
+          <Input
+            type="number"
+            value={currentCustomer?.mobile.toString() }
+            onChange={(e) =>
+              setcurrentCustomer({ ...currentCustomer, mobile: Number(e.target.value) } as CustomerType)
+            }
+          /></div>
+          
+        </ModalBody>
+        <ModalFooter>
+          <Button 
+            color="danger" 
+            variant="flat" 
+            onPress={onClose}
+            className='bg-red-500 cursor-pointer text-white rounded-lg shadow-md'
+          >
+            Cancel
+
+          </Button>
+          <Button
+           
+            color="primary" 
+            onPress={() => {
+              if (currentCustomer) handleUpdateCustomer(currentCustomer);
+              onClose();
+            }}
+            className='bg-blue-500 cursor-pointer text-white rounded-lg shadow-md'
+          >
+            Update Product
+          </Button>
+        </ModalFooter>
+      </>
+    )}
+  </ModalContent>
+</Modal>
       </div>
     </div>
     </SidebarMenu>

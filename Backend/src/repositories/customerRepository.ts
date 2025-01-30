@@ -30,6 +30,11 @@ class CustomerRepository{
 
             return customer
     }
+
+    async delete(id:string):Promise<void>
+    {
+        await CustomerModel.findByIdAndDelete(id)
+    }
 }
 
 export default new CustomerRepository()

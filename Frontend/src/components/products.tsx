@@ -24,6 +24,7 @@ import {
 import SidebarMenu from './SIdebar';
 import { useNavigate } from 'react-router-dom';
 import { userAuthenticate } from '../utils/userInterceptor';
+import { toast } from 'sonner';
 export type ProductData={
   _id:string,
   name:string,
@@ -32,7 +33,6 @@ export type ProductData={
   price:number
 }
 const ProductManagementPage = () => {
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 const [currentProduct, setCurrentProduct] = useState<ProductData | null>(null);
 
@@ -42,10 +42,10 @@ const [currentProduct, setCurrentProduct] = useState<ProductData | null>(null);
     try {
       await userAuthenticate.delete(`/delete-product/${id}`);
       setProducts(products.filter((product) => product._id !== id)); // Update frontend state
-      alert("Product deleted successfully!");
+      toast.success("Product deleted successfully!");
     } catch (error) {
       console.error("Error deleting product:", error);
-      alert("Failed to delete product.");
+      toast.error("Failed to delete product.");
     }
   };
   
@@ -57,10 +57,10 @@ const [currentProduct, setCurrentProduct] = useState<ProductData | null>(null);
           product._id === updatedProduct._id ? response.data : product
         )
       ); // Update frontend state
-      alert("Product updated successfully!");
+      toast.success("Product updated successfully!");
     } catch (error) {
       console.error("Error updating product:", error);
-      alert("Failed to update product.");
+      toast.error("Failed to update product.");
     }
   };
   
@@ -186,72 +186,7 @@ const navigate=useNavigate()
           </TableBody>
         </Table>
 
-        {/* Add Product Modal */}
-        <Modal 
-          isOpen={isAddModalOpen} 
-          onOpenChange={setIsAddModalOpen}
-          placement="top-center"
-        >
-          <ModalContent>
-            {(onClose) => (
-              <>
-                <ModalHeader className="flex flex-col gap-1">
-                  Add New Product
-                </ModalHeader>
-                <ModalBody>
-                  
-                  <Input
-                    autoFocus
-                    label="Product Name"
-                    placeholder="Enter product name"
-                    variant="bordered"
-                  />
-                  <Input
-                    label="Description"
-                    placeholder="Enter product description"
-                    variant="bordered"
-                  />
-                  <Input
-                    type="number"
-                    label="Quantity"
-                    placeholder="Enter quantity"
-                    variant="bordered"
-                  />
-                  <Input
-                    type="number"
-                    label="Price"
-                    placeholder="Enter price"
-                    variant="bordered"
-                    startContent={
-                      <div className="pointer-events-none flex items-center">
-                        <span className="text-default-400 text-small">₹</span>
-                      </div>
-                    }
-                  />
-                </ModalBody>
-                <ModalFooter>
-                  <Button 
-                    color="danger" 
-                    variant="flat" 
-                    onPress={onClose}
-                  >
-                    Cancel
-                  </Button>
-                  <Button 
-                    color="primary" 
-                    onPress={() => {
-                      // Add product logic
-                      onClose();
-                    }}
-                  >
-                    Add Product
-                  </Button>
-                </ModalFooter>
-              </>
-            )}
-          </ModalContent>
-        </Modal>
-
+        
         <Modal 
   isOpen={isEditModalOpen} 
   onOpenChange={setIsEditModalOpen}

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { userAuthenticate } from "../utils/userInterceptor";
 import axios from "axios";
 import { useAuthContext } from "../context/authContext";
+import { toast } from "sonner";
 const baseURL = import.meta.env.VITE_USER_URL;
 console.log(baseURL, "baseUrl");
 
@@ -22,24 +23,37 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await axios.post(
-      `${baseURL}/login`,
-      { email, password },
-      { withCredentials: true }
-    );
-    console.log(response.data);
-    if (response.status == 200) {
-      const { accessToken, refreshToken } = response.data;
-      localStorage.setItem("inventoryAccessToken", accessToken);
-      localStorage.setItem("inventoryRefreshToken", refreshToken);
-      localStorage.setItem("inventoryData", JSON.stringify(true));
-      setUserAuthenticated(true);
-      navigate("/home");
+    try {
+      const response = await axios.post(
+        `${baseURL}/login`,
+        { email, password },
+        { withCredentials: true }
+      );
+      console.log(response, "response data");
+  
+      if (response.status === 200) {
+        const { accessToken, refreshToken } = response.data;
+        localStorage.setItem("inventoryAccessToken", accessToken);
+        localStorage.setItem("inventoryRefreshToken", refreshToken);
+        localStorage.setItem("inventoryData", JSON.stringify(true));
+        setUserAuthenticated(true);
+        navigate("/home");
+      }
+    } catch (error: any) {
+      
+      if (error.response) {
+        console.error("Login error:", error.response.data);
+        toast.error(error.response.data.error || "Invalid credentials");
+      } else {
+        console.error("Network error:", error);
+        toast.error("An unexpected error occurred. Please try again.");
+      }
     }
   };
+  
   return (
     <>
-      <div className="relative flex items-center justify-center bg-gray-600 text-slate-950 min-h-screen">
+      <div className="relative flex items-center justify-center bg-gray-200 text-slate-950 min-h-screen">
         <div className=" absolute flex items-center bg-slate-900  rounded-lg justify-center mx-8 my-12 p-16 shadow-lg gap-6 h-96 flex-col">
           <h1 className="text-2xl text-white mt-4 font-semibold text-center">
             Welcome to Inventory Management

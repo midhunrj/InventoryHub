@@ -97,6 +97,10 @@ const SalesManagement = () => {
     
   }, []);
 
+  useEffect(() => {
+    console.log("Updated currentBill:", currentBill);
+  }, [currentBill]);
+
   const handleGenerateBill = () => {
     // Validate inputs
     console.log("current Bill",currentBill);
@@ -152,26 +156,23 @@ const SalesManagement = () => {
     }
   
     try {
-      // Prepare the sale data
+    
       const saleData = {
-        customer: currentBill.customerId, // Assuming `currentBill.customerId` is the customer ID
+        customer: currentBill.customerId, 
         items: billItems.map(item => ({
           productId: item.productId,
           quantity: item.quantity,
           price: item.price,
         })),
-        payment: paymentType, // Cash, Card, or Online
-        totalAmount: billItems.reduce((total, item) => total + item.totalAmount, 0), // Calculate the total
+        payment: paymentType, 
+        totalAmount: billItems.reduce((total, item) => total + item.totalAmount, 0), 
       };
   
-      // Send to backend
+    
       const response = await userAuthenticate.post('/add-sale', saleData);
   console.log(response.data,"response data");
   
-      // Update sales list with new sale
-      // setSales(prevSales => [response.data, ...prevSales]);
-  
-      // Clear bill items and reset states
+      
       setBillItems([]);
       setCurrentBill({
         productId: '',
@@ -196,6 +197,9 @@ const SalesManagement = () => {
     sale.customerName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 console.log(filteredSales,"filtered sales");
+// useEffect(()=>{
+// console.log('check thec currennt bikk',currentBill.productName);
+// },[currentBill])
 
   return (
     <>
@@ -203,42 +207,9 @@ console.log(filteredSales,"filtered sales");
     
     <div className="bg-gray-50 min-h-screen p-8">
       <div className="container mx-auto">
-        {/* Existing sales table */}
-        {/* <div className="bg-white shadow-lg rounded-xl overflow-hidden mb-8">
-          <Table aria-label="Sales management table">
-            <TableHeader className="bg-gray-100">
-              <TableColumn className="text-center py-4 font-bold text-gray-700">PRODUCT</TableColumn>
-              <TableColumn className="text-center py-4 font-bold text-gray-700">CUSTOMER</TableColumn>
-              <TableColumn className="text-center py-4 font-bold text-gray-700">PRICE</TableColumn>
-              <TableColumn className="text-center py-4 font-bold text-gray-700">QUANTITY</TableColumn>
-              <TableColumn className="text-center py-4 font-bold text-gray-700">TOTAL AMOUNT</TableColumn>
-            </TableHeader>
-            <TableBody 
-              emptyState={
-                <div className="text-center p-8 text-gray-500">
-                  No Sales found
-                </div>
-              }
-            >
+     
 
-              {filteredSales.map((sale) => (
-               
-                
-                <TableRow key={sale.id} className="hover:bg-gray-50 transition-colors duration-200">
-                    
-                  <TableCell className="p-4 text-gray-800 text-center">{sale.productName}</TableCell>
-                  <TableCell className="p-4 text-gray-800 text-center">{sale.customerName}</TableCell>
-                  <TableCell className="p-4 text-gray-800 text-center">₹{sale.price.toFixed(2)}</TableCell>
-                  <TableCell className="p-4 text-gray-800 text-center">{sale.quantity}</TableCell>
-                  <TableCell className="p-4 text-gray-800 text-center">₹{sale.totalAmount.toFixed(2)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div> */}
-
-        {/* Current Bill Items Table */}
-        {billItems.length > 0 && (
+             {billItems.length > 0 && (
             <>
           <div className="bg-white shadow-lg rounded-xl overflow-hidden mb-8">
             <Table aria-label="Current bill items">
@@ -315,15 +286,16 @@ console.log(filteredSales,"filtered sales");
             <div>
               <label className="block mb-2 text-gray-700">Customer</label>
               <Autocomplete
-                // label="Select Customer"
-                className="w-full"
+                
+                className="w-full text-black"
+                
                 onSelectionChange={(key) => {
                   const customer = customers.find(c => c._id == (key));
                   if (customer) {
                     if (currentBill.customerId && currentBill.customerId !== customer._id.toString()) {
-                        // Prompt user to confirm clearing the bill
+                      console.log("Selected Customer:", customer);
                         if (confirm('Selecting a new customer will clear the current bill. Do you want to proceed?')) {
-                          // Clear the bill and set the new customer
+                      
                           setBillItems([]);
                           setCurrentBill({
                             ...currentBill,
@@ -354,34 +326,40 @@ console.log(filteredSales,"filtered sales");
 
         
             <div>
-              <label className="block mb-2 text-gray-700">Product</label>
-              <Autocomplete
-                // label="Select Product"
-                className="w-full"
-                onSelectionChange={(key) => {
-                  const product = products.find(p => p._id === (key));
-                  if (product) {
-                    setCurrentBill(prev => ({
-                      ...prev,
-                      productId: product._id,
-                      productName: product.name,
-                      price: product.price
-                    }));
-                  }
-                }}
-              >
-                {products.length > 0 ? products.map((product) => (
-                  <AutocompleteItem 
-                    key={product._id} 
-                    className='bg-white'
-                    value={product._id.toString() }
-                  >
-                    {product.name} - ₹{product.price.toFixed(2)}
-                  </AutocompleteItem>
-                )) : null}
-              </Autocomplete>
-            </div>
+  <label className="block mb-2 text-gray-700">Product</label>
+  <Autocomplete
+    className="w-full text-black "
+    // value={currentBill.productName}
+    style={{ color: "black" }} 
+    onSelectionChange={(key) => {
+      const product = products.find((p) => p._id === key);
+      if (product) {
+        console.log("Selected Product:", product); // Debugging
+        setCurrentBill((prev) => ({
+          ...prev,
+          productId: product._id,
+          productName: product.name, // Update product name
+          price: product.price,
+        }));
+      }
+    }}
+  >
+    {/* {currentBill.customerName} */}
+    {products.length > 0
+      ? products.map((product) => (
+          <AutocompleteItem
+            key={product._id}
+            className="bg-white w-full h-fit"
+            value={product._id.toString()}
+            textValue={product.name}
+          >
+            {product.name} - ₹{product.price.toFixed(2)} 
+          </AutocompleteItem>
+        ))
+      : null}
+  </Autocomplete>
 
+</div>
             {/* Quantity Input */}
             <div>
               <label className="block mb-2 text-gray-700">Quantity</label>

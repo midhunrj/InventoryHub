@@ -21,6 +21,11 @@ class CustomerService{
     {
         return await customerRepository.update(customerId,data)
     }
+    async deleteCustomer(customerId:string):Promise<void>
+    {
+        return customerRepository.delete(customerId)
+    }
+    
 }
 
 export default new CustomerService()

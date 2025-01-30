@@ -12,11 +12,11 @@ export class InventoryController{
         const user=await inventoryService.login(email,password)
         
         if (!user) {
-             res.status(401).json({ error: "Invalid credentials" });
+             res.status(404).json({ error: "Invalid credentials" });
              return
         }
         const {refreshToken}=user
-        res.cookie('RefreshToken', refreshToken, {
+        res.cookie('InventoryRefreshToken', refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
     sameSite: 'none', 
@@ -35,7 +35,7 @@ export class InventoryController{
     {
         try {
             const productData=await inventoryService.fetchProducts()
-            res.status(200).json(productData)
+            res.status(200).json(productData)   
         } catch (error) {
             console.log(error,"error in fetching all product list")
     res.status(500).json({message:"Error in fetching all product list"})

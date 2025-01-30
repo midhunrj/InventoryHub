@@ -55,6 +55,17 @@ class CustomerController{
          
     }
  }
+ async deleteCustomer(req:Request,res:Response)
+ {
+  try {
+    const {id}=req.params
+    await customerService.deleteCustomer(id as string)
+    res.status(204).send()
+} catch (error:any) {
+    console.log(error,"error in deleting customer")
+    res.status(500).json({message:"Error deleting the customer"})
+}
+ }
     
 }
 
