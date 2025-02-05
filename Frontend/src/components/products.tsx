@@ -23,6 +23,7 @@ import {
 } from '@heroui/react';
 import SidebarMenu from './SIdebar';
 import { useNavigate } from 'react-router-dom';
+import "./css/spinner.css"
 import { userAuthenticate } from '../utils/userInterceptor';
 import { toast } from 'sonner';
 export type ProductData={
@@ -35,7 +36,7 @@ export type ProductData={
 const ProductManagementPage = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 const [currentProduct, setCurrentProduct] = useState<ProductData | null>(null);
-
+const [loading, setLoading] = useState<boolean>(false);
   const [products, setProducts] = useState<ProductData[]>([]);
 
   const handleDeleteProduct = async (id:string) => {
@@ -103,7 +104,7 @@ const navigate=useNavigate()
           </Button>
         </div>
 
-        {/* Search Bar */}
+      
         <div className="mb-6">
           <Input
             isClearable
@@ -148,7 +149,7 @@ const navigate=useNavigate()
               No products found
             </div>
           }>
-            {filteredProducts.map((product) => (
+            {filteredProducts.length>0?(filteredProducts.map((product) => (
               <TableRow key={product._id}>
                 <TableCell>{product.name}</TableCell>
                 <TableCell>{product.description}</TableCell>
@@ -182,7 +183,16 @@ const navigate=useNavigate()
                   </div>
                 </TableCell>
               </TableRow>
-            ))}
+            ))):(
+              <TableRow>
+              {/* 🔹 Ensure the loader spans all 5 columns */}
+              <TableCell colSpan={5} className="text-center py-6">
+                <div className="flex justify-center">
+                  <div className="spinner"></div>
+                </div>
+              </TableCell>
+            </TableRow>)
+            }
           </TableBody>
         </Table>
 

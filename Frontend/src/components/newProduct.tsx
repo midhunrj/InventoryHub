@@ -15,7 +15,7 @@ type FormDataType = {
 const NewProduct:React.FC = () => {
   const [submitted, setSubmitted] = React.useState<FormDataType|null>(null);
   const [errors, setErrors] = React.useState<Record<string,string>>({});
-
+  const [loading, setLoading] = useState<boolean>(false);
   // Real-time password validation
   const validateForm = (data: FormDataType) => {
     const newErrors: Record<string, string> = {};
@@ -41,6 +41,7 @@ const NewProduct:React.FC = () => {
 
   const onSubmit =async (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true)
     const data =new FormData(e.currentTarget)
 
    const formData:FormDataType={
@@ -70,6 +71,9 @@ const NewProduct:React.FC = () => {
       } catch (error) {
         console.error('Error occurred while submitting the product', error);
       }
+      finally{
+        setLoading(false)
+      }
     setErrors({});
     setSubmitted(formData);
   };
@@ -77,6 +81,10 @@ const navigate=useNavigate()
   return (
     <>
     <SidebarMenu>
+      {loading &&(<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm z-50">
+                <div className="spinner"></div>
+              </div>
+            )}
       <div className="min-h-screen flex">
         {/* Sidebar takes its space */}
         <div className="flex-grow">

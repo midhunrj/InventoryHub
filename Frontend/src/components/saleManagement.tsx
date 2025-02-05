@@ -19,6 +19,7 @@ import {
 import { userAuthenticate } from '../utils/userInterceptor';
 import SidebarMenu from './SIdebar';
 import { toast } from 'sonner';
+import "./css/spinner.css"
 import { useNavigate } from 'react-router-dom';
 
 type SaleType = {
@@ -60,6 +61,7 @@ const SalesManagement = () => {
   const [sales, setSales] = useState<SaleType[]>([]);
   const [products, setProducts] = useState<ProductType[]>([]);
   const [customers, setCustomers] = useState<CustomerType[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [paymentType, setPaymentType] = useState<string>('');
   const [billItems, setBillItems] = useState<BillItemType[]>([]);
@@ -102,7 +104,7 @@ const SalesManagement = () => {
   }, [currentBill]);
 
   const handleGenerateBill = () => {
-    // Validate inputs
+  setLoading(true)
     console.log("current Bill",currentBill);
     
     if (!currentBill.productId || !currentBill.customerId) {
@@ -130,10 +132,10 @@ const SalesManagement = () => {
       totalAmount: currentBill.price * currentBill.quantity
     };
 
-    // Add to bill items
+    
     setBillItems([...billItems, newBillItem]);
     }
-    // Reset current bill selection
+    
     setCurrentBill({
         ...currentBill,
       productId: '',
@@ -142,9 +144,11 @@ const SalesManagement = () => {
       productName: '',
       price: 0
     });
+    setLoading(false)
   };
   const navigate=useNavigate()
   const handleConfirmSale = async () => {
+    setLoading(true)
     if (billItems.length === 0) {
       toast.error('No items in the bill');
       return;
@@ -190,6 +194,9 @@ const SalesManagement = () => {
       console.error('Failed to confirm sale', error);
       toast.error('Failed to confirm sale');
     }
+    finally{
+      setLoading(false)
+    }
   };
   
   const filteredSales = sales.filter(sale => 
@@ -204,7 +211,10 @@ console.log(filteredSales,"filtered sales");
   return (
     <>
     <SidebarMenu>
-    
+    {loading &&(<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm z-50">
+                <div className="spinner"></div>
+              </div>)}
+            
     <div className="bg-gray-50 min-h-screen p-8">
       <div className="container mx-auto">
      

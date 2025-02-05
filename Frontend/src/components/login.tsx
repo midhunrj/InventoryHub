@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { userAuthenticate } from "../utils/userInterceptor";
+import "./css/spinner.css"
 import axios from "axios";
 import { useAuthContext } from "../context/authContext";
 import { toast } from "sonner";
@@ -12,6 +12,7 @@ console.log(baseURL, "baseUrl");
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const { setUserAuthenticated } = useAuthContext();
   const navigate = useNavigate();
   const { userAuthenticated } = useAuthContext();
@@ -23,6 +24,7 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true)
     try {
       const response = await axios.post(
         `${baseURL}/login`,
@@ -49,11 +51,21 @@ const Login: React.FC = () => {
         toast.error("An unexpected error occurred. Please try again.");
       }
     }
+    finally {
+      setLoading(false)
+    }
   };
   
   return (
     <>
-      <div className="relative flex items-center justify-center bg-gray-200 text-slate-950 min-h-screen">
+      {loading && (
+  <div className="fixed inset-0 flex items-center justify-center bg-gray-200 bg-opacity-50 backdrop-blur-sm z-50">
+    <div className="spinner"></div>
+  </div>
+)}
+
+
+<div className="relative flex items-center justify-center bg-gray-200 text-slate-950 min-h-screen">
         <div className=" absolute flex items-center bg-slate-900  rounded-lg justify-center mx-8 my-12 p-16 shadow-lg gap-6 h-96 flex-col">
           <h1 className="text-2xl text-white mt-4 font-semibold text-center">
             Welcome to Inventory Management
