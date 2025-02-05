@@ -59,16 +59,16 @@ export class InventoryController{
  async refreshAccessToken(req: Request, res: Response){
     try {
         console.log("Request cookies:", req.cookies);  
-        const { RefreshToken } = req.cookies;
-        console.log("Refresh token from cookies:", RefreshToken);  
+        const { InventoryRefreshToken } = req.cookies;
+        console.log("Refresh token from cookies:", InventoryRefreshToken);  
 
-        if (!RefreshToken) {
+        if (!InventoryRefreshToken) {
             console.log("No refresh token found");  
             res.status(401).json({ message: "Refresh token is missing" });
             return
         }
 
-        const newAccessToken = await inventoryService.refreshAccessToken(RefreshToken);
+        const newAccessToken = await inventoryService.refreshAccessToken(InventoryRefreshToken);
         console.log("New Access Token:", newAccessToken); 
         res.status(200).json({ message: "New access token created", accessToken: newAccessToken });
 
