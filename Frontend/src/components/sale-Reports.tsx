@@ -373,7 +373,6 @@ const SalesReportManagement = () => {
   const [sales, setSales] = useState<SaleReportType[]>([]);
   const [products, setProducts] = useState<any[]>([]);
   const [customers, setCustomers] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
   const [reportFilter, setReportFilter] = useState<ReportFilterType>({
     type: 'customerLedger',
     startDate: '',
@@ -493,7 +492,7 @@ console.log(reportFilter,"reportfilterddgd",);
               </label>
             )}
             <Autocomplete
-        
+              //label="select product"
               
               className="max-w-xs"
               classNames={{
@@ -555,7 +554,7 @@ console.log(reportFilter,"reportfilterddgd",);
     <SidebarMenu>
       <div className="bg-gray-50 min-h-screen p-8">
         <div className="container mx-auto">
-          
+          {/* Report Type and Date Filters */}
           <div className="flex  justify-between items-center mb-6">
             <div className='flex space-x-4 w-full' >
               <div className='relative flex flex-col w-1/2'>
@@ -631,7 +630,7 @@ console.log(reportFilter,"reportfilterddgd",);
                 <TableColumn>Total Amount</TableColumn>
               </TableHeader>
               <TableBody>
-                {sales.length>0?(sales.map((sale,index) => (
+                {sales.map((sale,index) => (
                   <TableRow key={index}>
                     <TableCell>{sale.productName}</TableCell>
                     <TableCell>{sale.customerName}</TableCell>
@@ -639,10 +638,7 @@ console.log(reportFilter,"reportfilterddgd",);
                     <TableCell>{sale.quantity}</TableCell>
                     <TableCell>₹{sale.totalAmount.toFixed(2)}</TableCell>
                   </TableRow>
-                ))):(<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm z-50">
-                <div className="spinner"></div>
-              </div>)
-            }
+                ))}
               </TableBody>
             </Table>
           </div>

@@ -59,14 +59,15 @@ const Login: React.FC = () => {
   return (
     <>
       {loading && (
-  <div className="fixed inset-0 flex items-center justify-center bg-gray-200 bg-opacity-50 backdrop-blur-sm z-50">
+  <div className="fixed inset-0 flex items-center flex-col justify-center bg-gray-200 bg-opacity-50 backdrop-blur-sm z-50">
     <div className="spinner"></div>
+    <h2>Loading ...</h2>
   </div>
 )}
 
 
 <div className="relative flex items-center justify-center bg-gray-200 text-slate-950 min-h-screen">
-        <div className=" absolute flex items-center bg-slate-900  rounded-lg justify-center mx-8 my-12 p-16 shadow-lg gap-6 h-96 flex-col">
+        <div className=" absolute flex items-center  bg-slate-900  rounded-lg justify-center mx-8 my-12 p-16 shadow-lg gap-6 h-96 flex-col">
           <h1 className="text-2xl text-white mt-4 font-semibold text-center">
             Welcome to Inventory Management
           </h1>

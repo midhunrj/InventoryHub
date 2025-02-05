@@ -1,4 +1,4 @@
-import React from 'react'    
+import React, { useState } from 'react'    
 import {Form, Input, Button, Textarea} from "@heroui/react";
 
 import SidebarMenu from './SIdebar'
@@ -81,7 +81,7 @@ const navigate=useNavigate()
   return (
     <>
     <SidebarMenu>
-      {loading &&(<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm z-50">
+      {loading &&(<div className="fixed inset-0 flex items-center justify-center bg-gray-200 bg-opacity-50 backdrop-blur-sm z-50">
                 <div className="spinner"></div>
               </div>
             )}
