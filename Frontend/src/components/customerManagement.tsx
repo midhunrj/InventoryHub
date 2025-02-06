@@ -43,6 +43,9 @@ const CustomerManagement = () => {
     address: '',
     mobile: ''
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const customersPerPage = 10;
+
   const fetchCustomers=async()=>{
     const response=await userAuthenticate.get('/customers')
     setCustomers(response.data)
@@ -58,6 +61,9 @@ useEffect(()=>{
   const filteredCustomers = Customers.filter(Customer => 
     Customer.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  const totalPages = Math.ceil(filteredCustomers.length / customersPerPage);
+  const startIndex = (currentPage - 1) * customersPerPage;
+  const CustomerDatas = filteredCustomers.slice(startIndex, startIndex + customersPerPage);
 
   const handleDeleteCustomer = async (id:string) => {
     try {
@@ -154,13 +160,11 @@ useEffect(()=>{
                 <TableColumn className="text-center py-4 font-bold text-gray-700">ACTIONS</TableColumn>
               </TableHeader>
               <TableBody 
-                emptyState={
-                  <div className="text-center p-8 text-gray-500">
-                    No Customers found
-                  </div>
-                }
+                emptyContent=
+                  //<div className="text-center p-8 text-gray-500">
+                    "No Customers found"
               >
-                {filteredCustomers.map((Customer) => (
+                {CustomerDatas.map((Customer) => (
                   <TableRow 
                     key={Customer.mobile} 
                     className="hover:bg-gray-50 transition-colors duration-200"
@@ -349,6 +353,25 @@ useEffect(()=>{
     )}
   </ModalContent>
 </Modal>
+<div className="flex justify-center text-white mt-6 space-x-4">
+              <Button
+                isDisabled={currentPage === 1} 
+                onPress={() => setCurrentPage(currentPage - 1)}
+                className={`${currentPage==1?`px-4 py-2 rounded-md bg-blue-500   cursor-not-allowed hidden opacity-80` :`px-4 py-2 bg-blue-500 hover:bg-blue-700 rounded-md`}`}
+              >
+                Previous
+              </Button>
+              <span className="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded-md">
+                 {currentPage}
+              </span>
+              <Button
+                isDisabled={currentPage === totalPages}
+                onPress={() => setCurrentPage(currentPage + 1)}
+                className=" px-4 py-2 bg-blue-500 hover:bg-blue-700 rounded-md"
+              >
+                Next
+              </Button>
+            </div>
       </div>
     </div>
     </SidebarMenu>

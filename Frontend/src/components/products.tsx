@@ -39,6 +39,9 @@ const [currentProduct, setCurrentProduct] = useState<ProductData | null>(null);
 
   const [products, setProducts] = useState<ProductData[]>([]);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10;
+
   const handleDeleteProduct = async (id:string) => {
     try {
       await userAuthenticate.delete(`/delete-product/${id}`);
@@ -77,6 +80,9 @@ const fetchProducts=async()=>{
   const filteredProducts = products.filter(product => 
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const startIndex = (currentPage - 1) * productsPerPage;
+  const displayedProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage);
 
   // const handleAddProduct = (newProduct) => {
   //   setProducts([
@@ -144,12 +150,12 @@ const navigate=useNavigate()
             <TableColumn>PRICE</TableColumn>
             <TableColumn>ACTIONS</TableColumn>
           </TableHeader>
-          <TableBody emptyState={
-            <div className="text-center p-4">
-              No products found
-            </div>
-          }>
-            {filteredProducts.map((product) => (
+          <TableBody emptyContent=
+           // <div className="text-center p-4">
+              "No products found"
+          
+          >
+            {displayedProducts.map((product) => (
               <TableRow key={product._id}>
                 <TableCell>{product.name}</TableCell>
                 <TableCell>{product.description}</TableCell>
@@ -229,7 +235,7 @@ const navigate=useNavigate()
           </label>
           <Input
             type="number"
-            value={currentProduct?.quantity }
+            value={currentProduct?.quantity !== undefined ? String(currentProduct.quantity) : ""}
             onChange={(e) =>
               setCurrentProduct({ ...currentProduct, quantity: Number(e.target.value) } as ProductData)
             }
@@ -239,13 +245,16 @@ const navigate=useNavigate()
             Price
           </label>
           <Input
-            type="number"
-            
-            value={currentProduct?.price}
-            onChange={(e) =>
-              setCurrentProduct({ ...currentProduct, price: Number(e.target.value) } as typeof products[0])
-            }
-          /></div>
+  type="number"
+  value={currentProduct?.price !== undefined ? String(currentProduct.price) : ""}
+  onChange={(e) =>
+    setCurrentProduct({
+      ...currentProduct,
+      price: Number(e.target.value),
+    } as ProductData)
+  }
+/>
+</div>
         </ModalBody>
         <ModalFooter>
           <Button 
@@ -273,7 +282,25 @@ const navigate=useNavigate()
     )}
   </ModalContent>
 </Modal>
-
+<div className="flex justify-center text-white mt-6 space-x-4">
+              <Button
+                isDisabled={currentPage === 1}
+                onPress={() => setCurrentPage(currentPage - 1)}
+                className={`${currentPage==1?`px-4 py-2 rounded-md bg-blue-500   cursor-not-allowed hidden opacity-80`:`px-4 py-2 bg-blue-500 hover:bg-blue-700 rounded-md`}`}
+              >
+                Previous
+              </Button>
+              <span className="px-4 py-2 bg-blue-500 hover:bg-blue-700 rounded-md w-fit h-fit text-white">
+                {currentPage}
+              </span>
+              <Button
+                isDisabled={currentPage === totalPages}
+                onPress={() => setCurrentPage(currentPage + 1)}
+                className=" px-4 py-2 bg-blue-500 hover:bg-blue-700 rounded-md"
+              >
+                Next
+              </Button>
+            </div>
       </div>
     </div>
     </SidebarMenu>

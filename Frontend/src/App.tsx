@@ -14,7 +14,7 @@ import UserProtected from './protected/userProtected'
 import ProductManagementPage from './components/products'
 import CustomerManagement from './components/customerManagement'
 import SalesManagement from './components/saleManagement'
-import Sales from './components/sale-Reports'
+
 import SalesReportManagement from './components/sale-Reports'
 
 function App() {
